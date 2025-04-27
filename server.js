@@ -42,18 +42,23 @@ app.get('/', (req, res) => {
 
 // --- API Endpoint ---
 app.post('/ask-yoda', async (req, res) => {
+    // Log entry into the endpoint immediately
+    console.log("Entered /ask-yoda endpoint."); 
+
     const userMessage = req.body.message;
+    console.log("Parsed userMessage:", userMessage); // Log parsed message
 
     if (!userMessage) {
+        console.log("User message missing, sending 400."); // Log reason for error
         return res.status(400).json({ error: 'Message is required in the request body.' });
     }
 
     if (!DEEPSEEK_API_KEY) {
-        console.error("DeepSeek API key is missing!");
+        console.error("DeepSeek API key is missing! Check Render Environment variables."); // More specific log
         return res.status(500).json({ error: 'Server configuration error: API key missing.' });
     }
 
-    console.log(`Received message for Yoda: "${userMessage}"`);
+    console.log(`Processing message for Yoda: "${userMessage}"`); // Changed log message slightly
 
     try {
         console.log("Calling DeepSeek API...");
@@ -97,7 +102,9 @@ app.post('/ask-yoda', async (req, res) => {
         }
 
     } catch (error) {
-        console.error("Error calling DeepSeek API or processing response:", error);
+        // Log the full error object for more details
+        console.error("ERROR caught in /ask-yoda endpoint:", error); 
+        // Send a generic server error message back
         res.status(500).json({ error: 'Internal server error while contacting the Force.' });
     }
 });

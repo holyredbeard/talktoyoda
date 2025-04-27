@@ -2,12 +2,17 @@ import express from 'express';
 import fetch from 'node-fetch'; // node-fetch v2/v3 might require different import syntax
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv'; // Import dotenv
+
+// Load environment variables from .env file
+dotenv.config(); 
 
 // --- Configuration ---
 const PORT = process.env.PORT || 3001;
 // IMPORTANT: Store your API key securely. Environment variables are recommended.
 // Avoid hardcoding it directly in the code if possible for production apps.
-const DEEPSEEK_API_KEY = 'sk-add35bac795a45528576d6ae8ee2b5dc'; // Your key here
+// const DEEPSEEK_API_KEY = 'sk-add35bac795a45528576d6ae8ee2b5dc'; // Your key here - REMOVED HARDCODED KEY
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY; // Read from environment variable
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions';
 const YODA_SYSTEM_PROMPT = 'You are Master Yoda from Star Wars. Respond to the user in Yoda\'s characteristic speech pattern (object-subject-verb, short sentences, wise and philosophical tone). Keep your answers relatively short.';
 

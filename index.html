@@ -184,7 +184,7 @@
             const chatForm = document.getElementById('chatForm');
             const userInput = document.getElementById('userInput');
             const chatMessages = document.getElementById('chatMessages');
-            const backendUrl = '/ask-yoda'; // Our new backend endpoint
+            const backendUrl = '/api/ask-yoda'; // Changed endpoint to match Vercel API route
             
             // Add a new message to the chat
             function addMessage(sender, message, isYoda = false) {

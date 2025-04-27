@@ -22,9 +22,10 @@ const __dirname = path.dirname(__filename);
 
 // --- Initialize Express ---
 const app = express();
-app.use(express.json()); // Middleware to parse JSON request bodies
+app.use(express.json()); // Re-enable JSON parsing middleware
 
 // Middleware to log all incoming requests
+// Re-enable logging middleware
 app.use((req, res, next) => {
     console.log(`Incoming request: ${req.method} ${req.url}`);
     next(); // Pass control to the next handler
@@ -43,36 +44,22 @@ app.get('/', (req, res) => {
 // --- API Endpoint ---
 app.post('/ask-yoda', async (req, res) => {
     // Log entry into the endpoint immediately
-    console.log("Entered /ask-yoda endpoint (Simplified)."); 
-    
-    // --- TEMPORARILY SIMPLIFIED FOR DEBUGGING ---
-    try {
-        // Just send a simple response back immediately
-        console.log("Sending simplified test response...");
-        res.json({ yodaResponse: "Test successful, server received POST. Hmm." });
-        return; // Exit early
-    } catch (error) {
-        console.error("ERROR in simplified /ask-yoda:", error);
-        res.status(500).json({ error: 'Simplified handler error.' });
-        return;
-    }
-    // --- END OF TEMPORARY SIMPLIFICATION ---
-/* 
-    // Original code commented out below:
+    console.log("Entered /ask-yoda endpoint."); 
+
     const userMessage = req.body.message;
-    console.log("Parsed userMessage:", userMessage);
+    console.log("Parsed userMessage:", userMessage); // Log parsed message
 
     if (!userMessage) {
-        console.log("User message missing, sending 400."); 
+        console.log("User message missing, sending 400."); // Log reason for error
         return res.status(400).json({ error: 'Message is required in the request body.' });
     }
 
     if (!DEEPSEEK_API_KEY) {
-        console.error("DeepSeek API key is missing! Check Render Environment variables."); 
+        console.error("DeepSeek API key is missing! Check Render Environment variables."); // More specific log
         return res.status(500).json({ error: 'Server configuration error: API key missing.' });
     }
 
-    console.log(`Processing message for Yoda: \"${userMessage}\""); 
+    console.log(`Processing message for Yoda: "${userMessage}"`); // Changed log message slightly
 
     try {
         console.log("Calling DeepSeek API...");
@@ -83,7 +70,7 @@ app.post('/ask-yoda', async (req, res) => {
                 'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
             },
             body: JSON.stringify({
-                model: 'deepseek-chat', 
+                model: 'deepseek-chat', // Use the appropriate model
                 messages: [
                     { role: 'system', content: YODA_SYSTEM_PROMPT },
                     { role: 'user', content: userMessage }
@@ -95,14 +82,16 @@ app.post('/ask-yoda', async (req, res) => {
 
         const responseData = await apiResponse.json();
         console.log("Received DeepSeek Status:", apiResponse.status);
-        // console.log("Received DeepSeek Data:", JSON.stringify(responseData, null, 2));
+        // console.log("Received DeepSeek Data:", JSON.stringify(responseData, null, 2)); // Uncomment for detailed debugging
 
         if (!apiResponse.ok) {
             console.error("DeepSeek API Error:", responseData);
+            // Pass the error message from DeepSeek if available
             const errorMessage = responseData?.error?.message || `API request failed with status ${apiResponse.status}`;
             return res.status(apiResponse.status).json({ error: errorMessage });
         }
 
+        // Extract Yoda's response
         const yodaResponse = responseData?.choices?.[0]?.message?.content?.trim();
 
         if (yodaResponse) {
@@ -114,10 +103,11 @@ app.post('/ask-yoda', async (req, res) => {
         }
 
     } catch (error) {
+        // Log the full error object for more details
         console.error("ERROR caught in /ask-yoda endpoint:", error); 
+        // Send a generic server error message back
         res.status(500).json({ error: 'Internal server error while contacting the Force.' });
     }
-*/
 });
 
 // --- Start Server ---
